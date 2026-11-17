@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SupportPilot - Ticket Processing & Classification</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { background-color: #f4f6fa; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        .sidebar { min-height: 100vh; background: #ffffff; border-right: 1px solid #e9ecef; }
+        .nav-link { color: #6c757d; font-weight: 500; border-radius: 8px; margin-bottom: 4px; }
+        .nav-link.active { background-color: #e7f1ff; color: #0d6efd; }
+        .stat-card { background: #f8f9fc; border-radius: 10px; border: 1px solid #edf0f5; }
+        .badge-critical, .badge-p1 { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
+        .badge-high, .badge-p2 { background: #ffedd5; color: #ea580c; border: 1px solid #fdba74; }
+        .badge-medium, .badge-p3 { background: #fef9c3; color: #ca8a04; border: 1px solid #fde047; }
+        .badge-low, .badge-p4 { background: #dcfce7; color: #16a34a; border: 1px solid #86efac; }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar (Slide 55) -->
+        <div class="col-md-2 p-3 sidebar d-none d-md-block">
+            <div class="d-flex align-items-center mb-4 ps-2">
+                <span class="badge bg-primary p-2 me-2"><i class="bi bi-send-fill text-white"></i></span>
+                <span class="fs-5 fw-bold text-dark">SupportPilot</span>
+            </div>
+            <ul class="nav flex-column">
+                <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-grid me-2"></i> Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link active" href="#"><i class="bi bi-ticket-detailed me-2"></i> Tickets</a></li>
+                <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-robot me-2"></i> AI Agent</a></li>
+                <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-hdd-network me-2"></i> Integrations</a></li>
+                <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-bar-chart me-2"></i> Analytics</a></li>
+                <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-gear me-2"></i> Settings</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="col-md-10 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="fw-bold mb-1">Ticket Processing & Classification</h3>
+                    <p class="text-muted mb-0">Submit and classify IT support tickets automatically</p>
+                </div>
+                <span class="badge bg-primary px-3 py-2 rounded-pill">Milestone 1</span>
+            </div>
+
+            <div class="row g-4">
+                <!-- Submit Form (Left Column) -->
+                <div class="col-lg-6">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-plus-circle me-2 text-primary"></i>Submit New Ticket</h5>
+                        <form id="ticketForm">
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold">Ticket Title</label>
+                                <input type="text" id="title" class="form-control" placeholder="e.g. VPN Connection Failing on Corporate Network" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold">Description</label>
+                                <textarea id="description" class="form-control" rows="4" placeholder="Describe the issue in detail..." required></textarea>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold">Requester Email</label>
+                                    <input type="email" id="email" class="form-control" placeholder="arun@company.com" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-semibold">Department</label>
+                                    <select id="department" class="form-select">
+                                        <option value="IT">IT</option>
+                                        <option value="Sales">Sales</option>
+                                        <option value="Engineering">Engineering</option>
+                                        <option value="HR">HR</option>
+                                        <option value="Finance">Finance</option>
+                                        <option value="Marketing">Marketing</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold rounded-3">
+                                <i class="bi bi-send me-1"></i> Submit Ticket
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- AI Classification Results (Right Column) -->
+                <div class="col-lg-6">
+                    <div class="card border-0 shadow-sm rounded-4 p-4">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-cpu me-2 text-primary"></i>AI Classification Results</h5>
+                        
+                        <!-- Dynamically bound to the latest ticket from SQLite -->
+                        {% set latest = tickets[0] if tickets else none %}
+                        <div id="resultBox" class="p-3 mb-3 rounded-3" style="background:#f8fafc; border:1px solid #e2e8f0;">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="fw-bold text-dark" id="resTicketId">
+                                    Ticket #T-{{ latest.ticket_id if latest else '1001' }}
+                                </span>
+                                <span id="resPriorityBadge" class="badge badge-{{ latest.priority|lower if latest else 'p1' }} px-2 py-1">
+                                    {{ latest.priority if latest else 'P1' }} - {{ latest.severity if latest else 'Critical' }}
+                                </span>
+                            </div>
+                            <div class="row g-2 mb-2">
+                                <div class="col-6">
+                                    <small class="text-muted d-block">Category</small>
+                                    <strong id="resCategory" class="text-primary">{{ latest.category if latest else 'VPN' }}</strong>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted d-block">Severity</small>
+                                    <strong id="resSeverity">{{ latest.severity if latest else 'High' }}</strong> 
+                                    (<span id="resConfidence">{{ (latest.confidence * 100)|round(1) if (latest and latest.confidence <= 1) else (latest.confidence if latest else '94%') }}%</span> confidence)
+                                </div>
+                            </div>
+                            {% if latest %}
+                            <small class="text-muted d-block text-truncate"><em>"{{ latest.title }}"</em></small>
+                            {% endif %}
+                        </div>
+
+                        <!-- Quick Stats (Slide 55) -->
+                        <div class="row g-2 mb-3 text-center">
+                            <div class="col-4">
+                                <div class="stat-card p-2">
+                                    <small class="text-muted d-block">Model Accuracy</small>
+                                    <strong class="fs-5 text-dark">100%</strong>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="stat-card p-2">
+                                    <small class="text-muted d-block">Avg. Process Time</small>
+                                    <strong class="fs-5 text-dark">0.8s</strong>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="stat-card p-2">
+                                    <small class="text-muted d-block">Tickets Ingested</small>
+                                    <strong class="fs-5 text-dark">{{ tickets | length }}</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Ingested Tickets List -->
+                        <h6 class="small fw-bold text-muted mb-2">Recent Ingested Tickets</h6>
+                        <div class="list-group list-group-flush small" style="max-height: 230px; overflow-y: auto;">
+                            {% for t in tickets[:6] %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div class="me-2 text-truncate">
+                                    <strong class="text-dark d-block text-truncate">{{ t.title }}</strong>
+                                    <div class="text-muted small">{{ t.category }} • {{ t.created_at }}</div>
+                                </div>
+                                <span class="badge badge-{{ t.priority | lower }}">{{ t.priority }}</span>
+                            </div>
+                            {% else %}
+                            <div class="text-center text-muted py-3">No tickets submitted yet.</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('ticketForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const payload = {
+        title: document.getElementById('title').value,
+        description: document.getElementById('description').value,
+        email: document.getElementById('email').value,
+        employee_name: "Employee (" + document.getElementById('department').value + ")"
+    };
+
+    const res = await fetch('/ticket', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+    });
+
+    if (res.ok) {
+        // Refresh so the page displays the newly saved ticket at the top
+        location.reload();
+    }
+});
+</script>
+</body>
+</html>
