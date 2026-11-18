@@ -9,23 +9,23 @@ def get_model():
         return joblib.load(MODEL_PATH)
     raise FileNotFoundError("Run train_model.py first to create models/ticket_classifier.pkl")
 
-# Exact keyword severity engine from Slide 30
+# Exact keyword severity engine from 
 def predict_severity(ticket):
     text = ticket.lower()
     
-    # Critical keywords (Slide 30)
+    # Critical keywords 
     critical_words = [
         "server down", "entire company", "production down", 
         "security breach", "critical outage", "unauthorized access", 
         "database cluster", "backup system failure"
     ]
-    # High keywords (Slide 30)
+    # High keywords 
     high_words = [
         "urgent", "cannot work", "business stopped", "client meeting", 
         "vpn not working", "vpn is not connecting", "blue screen", 
         "computer will not start", "timeout"
     ]
-    # Medium keywords (Slide 30)
+    # Medium keywords 
     medium_words = [
         "slow", "error", "problem", "issue", "disconnected", 
         "not working", "paper jam", "draining", "frozen", "crashing"
@@ -42,7 +42,7 @@ def predict_severity(ticket):
             return "Medium"
     return "Low"
 
-# Priority calculation matrix from Slide 34
+# Priority calculation matrix 
 def calculate_priority(severity, business_impact="Normal"):
     if severity == "Critical" and business_impact == "High":
         return "P1"
@@ -57,7 +57,7 @@ def calculate_priority(severity, business_impact="Normal"):
     else:
         return "P4"
 
-# Combined master function from Slide 37
+# Combined master function 
 def process_ticket(ticket):
     model = get_model()
 

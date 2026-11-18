@@ -15,7 +15,7 @@ if not os.path.exists(CSV_PATH):
 print(f"Loading {CSV_PATH}...")
 df = pd.read_csv(CSV_PATH)
 
-# Combine Title and Description for full context (Work 3)
+# Combine Title and Description for full context 
 df['full_text'] = df['title'] + " " + df['description']
 
 X = df['full_text']
@@ -24,7 +24,7 @@ y = df['category']
 # 80% Training, 20% Testing split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# TF-IDF + Logistic Regression Pipeline (Slides 10 & 24)
+# TF-IDF + Logistic Regression Pipeline 
 model_pipeline = Pipeline([
     ('tfidf', TfidfVectorizer(ngram_range=(1, 2), stop_words='english', lowercase=True)),
     ('clf', LogisticRegression(C=5.0, max_iter=300))
