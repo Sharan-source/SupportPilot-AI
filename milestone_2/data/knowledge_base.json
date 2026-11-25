@@ -1,0 +1,44 @@
+[
+  {
+    "id": "KB001",
+    "title": "VPN Troubleshooting Guide",
+    "category": "Network Connectivity",
+    "content": "Step-by-step instructions for resolving VPN connection issues.\n1. Verify that the user has an active internet connection.\n2. Check VPN client configuration and gateway address.\n3. Verify authentication settings and domain credentials.\n4. Restart the VPN service and clear cached credentials.\n5. If connection times out, test from another network location."
+  },
+  {
+    "id": "KB002",
+    "title": "Network Firewall Configuration",
+    "category": "IT Policies",
+    "content": "Corporate firewalls must allow VPN traffic.\n1. Verify that VPN traffic is permitted on ports 500 and 4500 for IPsec connections.\n2. Ensure outbound UDP traffic is not blocked by local ISP or proxy.\n3. Check enterprise perimeter firewall policy for IPsec pass-through."
+  },
+  {
+    "id": "KB003",
+    "title": "VPN Authentication Problems",
+    "category": "Authentication",
+    "content": "Instructions for authentication failures on corporate gateway.\n1. Verify username, domain password, and Active Directory lockout state.\n2. Resync MFA / 2FA token in the corporate authenticator app.\n3. Clear expired SSL/TLS certificates and cached client tokens."
+  },
+  {
+    "id": "KB004",
+    "title": "Corporate Wi-Fi and DNS Troubleshooting",
+    "category": "Network",
+    "content": "Resolving office Wi-Fi and DNS resolution errors.\n1. Forget and reconnect to the corporate 802.1x network.\n2. Run ipconfig /flushdns in terminal to clear stale DNS cache.\n3. Verify DHCP is assigning an IP within the 10.x.x.x corporate subnet.\n4. Restart local network adapter."
+  },
+  {
+    "id": "KB005",
+    "title": "Active Directory Password Reset SOP",
+    "category": "Access Management",
+    "content": "Standard operating procedure for account unlocks and password resets.\n1. Verify employee identity via manager confirmation or employee ID.\n2. Unlock user account in Active Directory Users & Computers console.\n3. Issue a temporary password requiring change at next logon."
+  },
+  {
+    "id": "KB006",
+    "title": "Software Provisioning and License Assignment",
+    "category": "Software",
+    "content": "Standard deployment for licensed enterprise software.\n1. Verify user role eligibility in Azure AD software licensing portal.\n2. Push software package silently via Microsoft Intune / SCCM.\n3. Assign license seat in Office 365 or Adobe Admin Console."
+  },
+  {
+    "id": "KB007",
+    "title": "Critical Server and Infrastructure Incident Recovery",
+    "category": "System Infrastructure",
+    "content": "Response protocol for server downtime and database cluster failures.\n1. Check infrastructure status page and alert on-call DevOps team.\n2. Inspect server health via SSH / management console.\n3. Failover database read/write traffic to secondary replica.\n4. Collect kernel crash dumps and reboot affected node."
+  }
+]
